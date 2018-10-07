@@ -1,0 +1,15 @@
+language: java
+jdk:
+- oraclejdk8
+branches:
+  only:
+  - master
+  - develop
+notifications:
+  email:
+    recipients:
+    - roberto.martin.escribano@alumnos.upm.es
+script:
+- mvn verify
+- mvn org.jacoco:jacoco-maven-plugin:prepare-agent verify
+- mvn sonar:sonar -Dsonar.organization=robertome-github -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=$SONAR
