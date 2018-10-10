@@ -72,6 +72,7 @@ Respuesta
 
 ## GET /alumnos/\{id\}/practicas
 Listado con las prácticas del alummno \{id\}
+
 Respuesta
 
     200 OK
