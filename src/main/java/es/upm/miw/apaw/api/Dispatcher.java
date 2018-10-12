@@ -1,7 +1,9 @@
 package es.upm.miw.apaw.api;
 
+import es.upm.miw.apaw.api.apiControllers.ProfesorApiController;
 import es.upm.miw.apaw.api.daos.DaoFactory;
 import es.upm.miw.apaw.api.daos.memory.DaoMemoryFactory;
+import es.upm.miw.apaw.api.dtos.ProfesorDto;
 import es.upm.miw.apaw.api.exceptions.ArgumentNotValidException;
 import es.upm.miw.apaw.api.exceptions.NotFoundException;
 import es.upm.miw.apaw.api.exceptions.RequestInvalidException;
@@ -14,6 +16,8 @@ public class Dispatcher {
     static {
         DaoFactory.setFactory(new DaoMemoryFactory());
     }
+
+    private final ProfesorApiController profesorApiController = new ProfesorApiController();
 
     public void submit(HttpRequest request, HttpResponse response) {
         String ERROR_MESSAGE = "{'error':'%S'}";
@@ -51,8 +55,11 @@ public class Dispatcher {
     }
 
     private void doPost(HttpRequest request, HttpResponse response) {
-        throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
-
+        if (request.isEqualsPath(ProfesorApiController.PROFESORES)) {
+            response.setBody(profesorApiController.create((ProfesorDto) request.getBody()));
+        } else {
+            throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+        }
     }
 
     private void doGet(HttpRequest request, HttpResponse response) {

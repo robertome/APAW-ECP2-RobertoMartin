@@ -47,7 +47,7 @@ public class Aula {
     }
 
     static class Builder {
-        private Aula aula = new Aula();
+        private final Aula aula = new Aula();
 
         public Builder id(String id) {
             assert id != null && !id.isEmpty();
