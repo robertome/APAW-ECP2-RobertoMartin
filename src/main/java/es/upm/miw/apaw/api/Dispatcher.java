@@ -17,7 +17,7 @@ public class Dispatcher {
         DaoFactory.setFactory(new DaoMemoryFactory());
     }
 
-    private ProfesorApiController profesorApiController = new ProfesorApiController();
+    private final ProfesorApiController profesorApiController = new ProfesorApiController();
 
     public void submit(HttpRequest request, HttpResponse response) {
         String ERROR_MESSAGE = "{'error':'%S'}";

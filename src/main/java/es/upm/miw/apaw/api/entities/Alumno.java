@@ -9,7 +9,7 @@ public class Alumno {
     private String nombre;
     private String apellidos;
     private Profesor profesor;
-    private Set<Practica> practicas = new HashSet<>();
+    private final Set<Practica> practicas = new HashSet<>();
 
     public Alumno() {
     }
@@ -59,7 +59,7 @@ public class Alumno {
     }
 
     static class Builder {
-        private Alumno alumno = new Alumno();
+        private final Alumno alumno = new Alumno();
 
         public Builder id(String id) {
             assert id != null && !id.isEmpty();

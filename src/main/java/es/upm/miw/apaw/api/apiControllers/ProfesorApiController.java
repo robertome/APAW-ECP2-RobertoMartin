@@ -8,7 +8,7 @@ public class ProfesorApiController {
 
     public static final String PROFESORES = "/profesores";
 
-    private ProfesorBusinessController profesorBusinessController = new ProfesorBusinessController();
+    private final ProfesorBusinessController profesorBusinessController = new ProfesorBusinessController();
 
     public String create(ProfesorDto profesorDto) {
         validateNotNull(profesorDto, "profesorDto");

@@ -4,11 +4,10 @@ import es.upm.miw.apaw.api.apiControllers.ProfesorApiController;
 import es.upm.miw.apaw.api.dtos.ProfesorDto;
 import es.upm.miw.apaw.http.*;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.commons.util.StringUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ProfesoresIT {
+class ProfesoresIT {
 
     @Test
     void testCreateProfesor() {
