@@ -58,7 +58,7 @@ public class Alumno {
         this.profesor = profesor;
     }
 
-    static class Builder {
+    public static class Builder {
         private final Alumno alumno = new Alumno();
 
         public Builder id(String id) {
