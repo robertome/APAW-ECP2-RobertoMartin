@@ -12,12 +12,12 @@ import static org.junit.jupiter.api.Assertions.*;
 class AlumnosIT {
 
     @Test
-    void testCreateAlumnoWithAlumnoDtoIdProfesor() {
+    void testCreateAlumnoWithAlumnoDtoProfesorId() {
         createAlumno(createProfesor());
     }
 
     @Test
-    void testCreateAlumnoWithAlumnoDtoIdProfesorNull() {
+    void testCreateAlumnoWithAlumnoDtoProfesorIdNull() {
         createAlumno(null);
     }
 
@@ -36,7 +36,7 @@ class AlumnosIT {
     }
 
     @Test
-    void testCreateAlumnoWithAlumnoDtoIdProfesorEmpty() {
+    void testCreateAlumnoWithAlumnoDtoProfesorIdEmpty() {
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).body(new AlumnoDto("Alumno", "Apellido1 Apellido2", "")).post();
         HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getHttpStatus());
@@ -90,7 +90,7 @@ class AlumnosIT {
     }
 
     @Test
-    void testUpdateAlumnoWithAlumnoDtoIdProfesor() {
+    void testUpdateAlumnoWithAlumnoDtoProfesorId() {
         String profesorId = createProfesor();
         String alumnoId = createAlumno(null);
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID)
@@ -101,7 +101,7 @@ class AlumnosIT {
     }
 
     @Test
-    void testUpdateAlumnoWithAlumnoDtoIdProfesorNull() {
+    void testUpdateAlumnoWithAlumnoDtoProfesorIdNull() {
         String profesorId = createProfesor();
         String alumnoId = createAlumno(null);
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID)
@@ -112,7 +112,7 @@ class AlumnosIT {
     }
 
     @Test
-    void testUpdateAlumnoWithAlumnoDtoIdProfesorEmpty() {
+    void testUpdateAlumnoWithAlumnoDtoProfesorIdEmpty() {
         String alumnoId = createAlumno(null);
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID)
                 .expandPath(alumnoId).body(new AlumnoDto("AlumnoUpdated", "Apellido1 Apellido2 Updated", "")).put();
@@ -176,6 +176,16 @@ class AlumnosIT {
                 .expandPath("s5FdeGf54D").body(new AlumnoDto("Nombre", "Apellidos")).put();
         HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+    }
+
+    @Test
+    void testUpdateUserWithAlumnoDtoProfesorIdNotFoundException() {
+        String alumnoId = createAlumno(null);
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID)
+                .expandPath(alumnoId).body(new AlumnoDto("Alumno Updated", "Apellido1 Apellido2 Updated", "s5FdeGf54D")).put();
+        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertTrue(exception.getMessage().contains("PROFESOR"));
     }
 
 }

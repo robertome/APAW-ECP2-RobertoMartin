@@ -11,26 +11,24 @@ public class AlumnoApiController extends ApiControllerSupport {
     private final AlumnoBusinessController alumnoBusinessController = new AlumnoBusinessController();
 
     public String create(AlumnoDto alumnoDto) {
-        validateNotNull(alumnoDto, "alumnoDto");
-        validateNotNull(alumnoDto.getNombre(), "alumnoDto.nombre");
-        validateNotEmpty(alumnoDto.getNombre(), "alumnoDto.nombre");
-        validateNotNull(alumnoDto.getApellidos(), "alumnoDto.apellidos");
-        validateNotEmpty(alumnoDto.getApellidos(), "alumnoDto.apellidos");
-        validateNotEmpty(alumnoDto.getProfesorId(), "alumnoDto.profesorId");
+        validateAlumnoDto(alumnoDto);
 
         return alumnoBusinessController.create(alumnoDto);
     }
 
     public void update(String id, AlumnoDto alumnoDto) {
+        validateAlumnoDto(alumnoDto);
+
+        alumnoBusinessController.update(id, alumnoDto);
+    }
+
+    private void validateAlumnoDto(AlumnoDto alumnoDto) {
         validateNotNull(alumnoDto, "alumnoDto");
         validateNotNull(alumnoDto.getNombre(), "alumnoDto.nombre");
         validateNotEmpty(alumnoDto.getNombre(), "alumnoDto.nombre");
         validateNotNull(alumnoDto.getApellidos(), "alumnoDto.apellidos");
         validateNotEmpty(alumnoDto.getApellidos(), "alumnoDto.apellidos");
         validateNotEmpty(alumnoDto.getProfesorId(), "alumnoDto.profesorId");
-
-
-        alumnoBusinessController.update(id, alumnoDto);
     }
 
 }

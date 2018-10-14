@@ -19,7 +19,7 @@ public class AlumnoBusinessController {
         Alumno alumno = DaoFactory.getFactory().getAlumnoDao().read(id)
                 .orElseThrow(() -> new NotFoundException("Alumno id: " + id));
         Profesor profesor = alumnoDto.getProfesorId() == null ? null : DaoFactory.getFactory().getProfesorDao().read(alumnoDto.getProfesorId())
-                .orElseThrow(() -> new NotFoundException("Pofesor id: " + alumnoDto.getProfesorId()));
+                .orElseThrow(() -> new NotFoundException("Profesor id: " + alumnoDto.getProfesorId()));
 
         alumno.setNombre(alumnoDto.getNombre());
         alumno.setApellidos(alumnoDto.getApellidos());

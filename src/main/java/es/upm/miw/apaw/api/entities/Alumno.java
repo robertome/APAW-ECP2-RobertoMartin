@@ -54,6 +54,10 @@ public class Alumno {
         return profesor;
     }
 
+    public void setProfesor(Profesor profesor) {
+        this.profesor = profesor;
+    }
+
     @Override
     public String toString() {
         return "Alumno{" +
@@ -62,10 +66,6 @@ public class Alumno {
                 ", apellidos='" + apellidos + '\'' +
                 ", profesor=" + profesor +
                 '}';
-    }
-
-    public void setProfesor(Profesor profesor) {
-        this.profesor = profesor;
     }
 
     public static class Builder {
