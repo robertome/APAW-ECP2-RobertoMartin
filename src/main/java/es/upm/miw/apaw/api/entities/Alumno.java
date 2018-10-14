@@ -69,9 +69,9 @@ public class Alumno {
                 ", nombre='" + nombre + '\'' +
                 ", apellidos='" + apellidos + '\'' +
                 ", profesor=" + profesor +
+                ", practicas=" + practicas +
                 '}';
     }
-
 
     public static class Builder {
         private final Alumno alumno = new Alumno();
