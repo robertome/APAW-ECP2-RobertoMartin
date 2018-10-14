@@ -58,6 +58,16 @@ public class Alumno {
         this.profesor = profesor;
     }
 
+    @Override
+    public String toString() {
+        return "Alumno{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", apellidos='" + apellidos + '\'' +
+                ", profesor=" + profesor +
+                '}';
+    }
+
     public static class Builder {
         private final Alumno alumno = new Alumno();
 
