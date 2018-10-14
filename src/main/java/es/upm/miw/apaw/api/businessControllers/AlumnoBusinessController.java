@@ -2,7 +2,9 @@ package es.upm.miw.apaw.api.businessControllers;
 
 import es.upm.miw.apaw.api.daos.DaoFactory;
 import es.upm.miw.apaw.api.dtos.AlumnoDto;
+import es.upm.miw.apaw.api.dtos.PracticaDto;
 import es.upm.miw.apaw.api.entities.Alumno;
+import es.upm.miw.apaw.api.entities.Practica;
 import es.upm.miw.apaw.api.entities.Profesor;
 import es.upm.miw.apaw.api.exceptions.NotFoundException;
 
@@ -28,4 +30,16 @@ public class AlumnoBusinessController {
         DaoFactory.getFactory().getAlumnoDao().save(alumno);
     }
 
+    public String createPractica(String alumnoId, PracticaDto practicaDto) {
+        Alumno alumno = DaoFactory.getFactory().getAlumnoDao().read(alumnoId)
+                .orElseThrow(() -> new NotFoundException("Alumno id: " + alumnoId));
+
+        Practica practica = Practica.builder(practicaDto.getNombre(), practicaDto.getAsignatura()).fecha(practicaDto.getFecha()).entregada(practicaDto.isEntregada()).build();
+        DaoFactory.getFactory().getPractica().save(practica);
+
+        alumno.addPractica(practica);
+        DaoFactory.getFactory().getAlumnoDao().save(alumno);
+
+        return practica.getId();
+    }
 }
