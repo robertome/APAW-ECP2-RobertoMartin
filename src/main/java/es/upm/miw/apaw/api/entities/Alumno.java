@@ -54,6 +54,16 @@ public class Alumno {
         return profesor;
     }
 
+    @Override
+    public String toString() {
+        return "Alumno{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", apellidos='" + apellidos + '\'' +
+                ", profesor=" + profesor +
+                '}';
+    }
+
     public void setProfesor(Profesor profesor) {
         this.profesor = profesor;
     }
