@@ -48,7 +48,6 @@ Parámetros del cuerpo
 Respuesta
 
     200 OK
-        id: String
     403 BAD_REQUEST
     404 NOT_FOUND
 
