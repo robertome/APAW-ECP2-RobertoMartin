@@ -1,6 +1,5 @@
 package es.upm.miw.apaw.api.daos;
 
-import es.upm.miw.apaw.api.entities.Practica;
 import org.apache.logging.log4j.LogManager;
 
 public abstract class DaoFactory {
