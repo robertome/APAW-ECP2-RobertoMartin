@@ -86,10 +86,12 @@ public class Practica {
             assert nombre != null && !nombre.isEmpty();
             assert asignatura != null;
 
+            this.nombre(nombre).asignatura(asignatura).fecha(LocalDateTime.now()).entregada(false);
+        }
+
+        public Builder nombre(String nombre) {
             practica.setNombre(nombre);
-            practica.setAsignatura(asignatura);
-            practica.setFecha(LocalDateTime.now());
-            practica.setEntregada(false);
+            return this;
         }
 
         public Builder fecha(LocalDateTime fecha) {

@@ -98,14 +98,16 @@ public class PracticaDto {
             assert nombre != null && !nombre.isEmpty();
             assert asignatura != null;
 
-            practicaDto.setNombre(nombre);
-            practicaDto.setAsignatura(asignatura);
-            practicaDto.setFecha(LocalDateTime.now());
-            practicaDto.setEntregada(false);
+            this.nombre(nombre).asignatura(asignatura).fecha(LocalDateTime.now()).entregada(false);
         }
 
         public Builder id(String id) {
             practicaDto.setId(id);
+            return this;
+        }
+
+        public Builder nombre(String nombre) {
+            practicaDto.setNombre(nombre);
             return this;
         }
 

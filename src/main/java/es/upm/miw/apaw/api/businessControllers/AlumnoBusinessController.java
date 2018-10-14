@@ -8,6 +8,10 @@ import es.upm.miw.apaw.api.entities.Practica;
 import es.upm.miw.apaw.api.entities.Profesor;
 import es.upm.miw.apaw.api.exceptions.NotFoundException;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class AlumnoBusinessController {
 
     public String create(AlumnoDto alumnoDto) {
@@ -41,5 +45,10 @@ public class AlumnoBusinessController {
         DaoFactory.getFactory().getAlumnoDao().save(alumno);
 
         return practica.getId();
+    }
+
+    public Set<PracticaDto> readAllPracticas(String alumnoId) {
+        Alumno alumno = DaoFactory.getFactory().getAlumnoDao().read(alumnoId).orElse(null);
+        return alumno == null ? new HashSet<PracticaDto>() : alumno.getPracticas().stream().map(practica -> PracticaDto.builder(practica).build()).collect(Collectors.toSet());
     }
 }
