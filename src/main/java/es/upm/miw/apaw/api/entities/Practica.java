@@ -18,7 +18,6 @@ public class Practica {
         return new Builder(nombre, asignatura);
     }
 
-
     public String getId() {
         return id;
     }
@@ -67,6 +66,18 @@ public class Practica {
         this.asignatura = asignatura;
     }
 
+    @Override
+    public String toString() {
+        return "Practica{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", fecha=" + fecha +
+                ", entregada=" + entregada +
+                ", nota=" + nota +
+                ", asignatura=" + asignatura +
+                '}';
+    }
+
     public static class Builder {
 
         private final Practica practica = new Practica();
@@ -76,6 +87,7 @@ public class Practica {
             assert asignatura != null;
 
             practica.setNombre(nombre);
+            practica.setAsignatura(asignatura);
             practica.setFecha(LocalDateTime.now());
             practica.setEntregada(false);
         }
