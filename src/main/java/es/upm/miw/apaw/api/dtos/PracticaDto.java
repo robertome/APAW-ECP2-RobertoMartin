@@ -1,30 +1,22 @@
-package es.upm.miw.apaw.api.entities;
+package es.upm.miw.apaw.api.dtos;
+
+import es.upm.miw.apaw.api.entities.Asignatura;
 
 import java.time.LocalDateTime;
 
-public class Practica {
+public class PracticaDto {
 
-    private String id;
     private String nombre;
     private LocalDateTime fecha = LocalDateTime.now();
     private Boolean entregada = false;
     private Integer nota;
     private Asignatura asignatura;
 
-    public Practica() {
+    public PracticaDto() {
     }
 
     public static Builder builder(String nombre, Asignatura asignatura) {
         return new Builder(nombre, asignatura);
-    }
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getNombre() {
@@ -69,39 +61,39 @@ public class Practica {
 
     public static class Builder {
 
-        private final Practica practica = new Practica();
+        private final PracticaDto practicaDto = new PracticaDto();
 
         public Builder(String nombre, Asignatura asignatura) {
             assert nombre != null && !nombre.isEmpty();
-            assert asignatura != null;
 
-            practica.setNombre(nombre);
-            practica.setFecha(LocalDateTime.now());
-            practica.setEntregada(false);
+            practicaDto.setNombre(nombre);
+            practicaDto.setAsignatura(asignatura);
+            practicaDto.setFecha(LocalDateTime.now());
+            practicaDto.setEntregada(false);
         }
 
         public Builder fecha(LocalDateTime fecha) {
-            practica.setFecha(fecha);
+            practicaDto.setFecha(fecha);
             return this;
         }
 
         public Builder entregada(Boolean entregada) {
-            practica.setEntregada(entregada);
+            practicaDto.setEntregada(entregada);
             return this;
         }
 
         public Builder asignatura(Asignatura asignatura) {
-            practica.setAsignatura(asignatura);
+            practicaDto.setAsignatura(asignatura);
             return this;
         }
 
         public Builder nota(Integer nota) {
-            practica.setNota(nota);
+            practicaDto.setNota(nota);
             return this;
         }
 
-        public Practica build() {
-            return practica;
+        public PracticaDto build() {
+            return practicaDto;
         }
     }
 }

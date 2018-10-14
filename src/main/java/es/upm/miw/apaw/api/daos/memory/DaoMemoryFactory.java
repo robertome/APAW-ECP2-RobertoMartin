@@ -3,12 +3,14 @@ package es.upm.miw.apaw.api.daos.memory;
 
 import es.upm.miw.apaw.api.daos.AlumnoDao;
 import es.upm.miw.apaw.api.daos.DaoFactory;
+import es.upm.miw.apaw.api.daos.PracticaDao;
 import es.upm.miw.apaw.api.daos.ProfesorDao;
 
 public class DaoMemoryFactory extends DaoFactory {
 
     private ProfesorDao profesorDao;
     private AlumnoDao alumnoDao;
+    private PracticaDao practicaDao;
 
     @Override
     public ProfesorDao getProfesorDao() {
@@ -26,5 +28,15 @@ public class DaoMemoryFactory extends DaoFactory {
         }
 
         return alumnoDao;
+    }
+
+    @Override
+    public PracticaDao getPractica() {
+        if (practicaDao == null) {
+            practicaDao = new PracticaDaoMemory();
+        }
+
+        return practicaDao;
+
     }
 }

@@ -58,6 +58,10 @@ public class Alumno {
         this.profesor = profesor;
     }
 
+    public void addPractica(Practica practica) {
+        practicas.add(practica);
+    }
+
     @Override
     public String toString() {
         return "Alumno{" +
@@ -68,15 +72,9 @@ public class Alumno {
                 '}';
     }
 
+
     public static class Builder {
         private final Alumno alumno = new Alumno();
-
-        public Builder id(String id) {
-            assert id != null && !id.isEmpty();
-
-            alumno.setId(id);
-            return this;
-        }
 
         public Builder nombre(String nombre) {
             assert nombre != null && !nombre.isEmpty();
