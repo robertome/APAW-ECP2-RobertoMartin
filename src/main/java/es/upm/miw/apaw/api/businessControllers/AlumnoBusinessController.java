@@ -51,4 +51,8 @@ public class AlumnoBusinessController {
         Alumno alumno = DaoFactory.getFactory().getAlumnoDao().read(alumnoId).orElse(null);
         return alumno == null ? new HashSet<PracticaDto>() : alumno.getPracticas().stream().map(practica -> PracticaDto.builder(practica).build()).collect(Collectors.toSet());
     }
+
+    public void delete(String alumnoId) {
+        DaoFactory.getFactory().getAlumnoDao().deleteById(alumnoId);
+    }
 }

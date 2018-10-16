@@ -93,7 +93,11 @@ public class Dispatcher {
     }
 
     private void doDelete(HttpRequest request) {
-        throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+        if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.ID_ID)) {
+            alumnoApiController.delete(request.getPath(1));
+        } else {
+            throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+        }
     }
 
 }
