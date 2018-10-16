@@ -194,7 +194,7 @@ class AlumnosIT {
 
 
     @Test
-    void testCreatePracticaAlumno() {
+    void testCreatePractica() {
         createPractica(createAlumno(null), "APAW. ECP2. Arquitecturas y Patrones Web", Asignatura.APAW);
     }
 
@@ -207,7 +207,7 @@ class AlumnosIT {
     }
 
     @Test
-    void testCreatePracticaAlumnoWithPracticaDtoNull() {
+    void testCreatePracticaWithPracticaDtoNull() {
         String alumnoId = createAlumno(null);
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).path(AlumnoApiController.PRACTICAS)
                 .expandPath(alumnoId).body(null).post();
@@ -216,7 +216,7 @@ class AlumnosIT {
     }
 
     @Test
-    void testCreatePracticaAlumnoWithAlumnoIdNotFoundException() {
+    void testCreatePracticaWithAlumnoIdNotFoundException() {
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).path(AlumnoApiController.PRACTICAS).expandPath("s5FdeGf54D").body(PracticaDto.builder("APAW. ECP2. Arquitecturas y Patrones Web", Asignatura.APAW).build()).post();
         HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
