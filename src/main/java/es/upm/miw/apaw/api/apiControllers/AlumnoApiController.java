@@ -36,6 +36,10 @@ public class AlumnoApiController extends ApiControllerSupport {
         return alumnoBusinessController.readAllPracticas(alumnoId);
     }
 
+    public void delete(String alumnoId) {
+        alumnoBusinessController.delete(alumnoId);
+    }
+
     private void validateAlumnoDto(AlumnoDto alumnoDto) {
         validateNotNull(alumnoDto, "alumnoDto");
         validateNotNull(alumnoDto.getNombre(), "alumnoDto.nombre");
