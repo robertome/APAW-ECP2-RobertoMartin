@@ -3,11 +3,14 @@ package es.upm.miw.apaw.api;
 import es.upm.miw.apaw.api.apiControllers.AlumnoApiController;
 import es.upm.miw.apaw.api.apiControllers.ProfesorApiController;
 import es.upm.miw.apaw.api.dtos.AlumnoDto;
+import es.upm.miw.apaw.api.dtos.AlumnoWithMediaDto;
 import es.upm.miw.apaw.api.dtos.PracticaDto;
 import es.upm.miw.apaw.api.dtos.ProfesorDto;
+import es.upm.miw.apaw.api.entities.Asignatura;
 import es.upm.miw.apaw.http.*;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -201,4 +204,39 @@ class AlumnosIT extends AlumnosITSupport {
         assertEquals(HttpStatus.OK, response.getStatus());
     }
 
+    @Test
+    void testSearchAverage() {
+        String alumnoId = createAlumno("Alumno1", "Apellidos Alumno 1", null);
+        updateNotaPractica(alumnoId, createPractica(alumnoId, "APAW. Practica1", Asignatura.APAW), 3);
+        updateNotaPractica(alumnoId, createPractica(alumnoId, "APAW. Practica2", Asignatura.APAW), 3);
+        updateNotaPractica(alumnoId, createPractica(alumnoId, "FEM. Practica1", Asignatura.FEM), 3);
+
+        alumnoId = createAlumno("Alumno2", "Apellidos Alumno 2", null);
+        updateNotaPractica(alumnoId, createPractica(alumnoId, "APAW. Practica1", Asignatura.APAW), 7);
+        updateNotaPractica(alumnoId, createPractica(alumnoId, "APAW. Practica2", Asignatura.APAW), 7);
+        updateNotaPractica(alumnoId, createPractica(alumnoId, "FEM. Practica1", Asignatura.FEM), 7);
+
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.SEARCH)
+                .param("q", "average:>=5").get();
+        List<AlumnoWithMediaDto> alumnos = (List<AlumnoWithMediaDto>) new Client().submit(request).getBody();
+        assertEquals(1, alumnos.size());
+        AlumnoWithMediaDto alumnoWithMediaDto = alumnos.get(0);
+        assertEquals(Double.valueOf(7), alumnoWithMediaDto.getMedia());
+    }
+
+    @Test
+    void testSearchAverageWithoutParamQ() {
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.SEARCH)
+                .param("error", "average:>=7").get();
+        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getHttpStatus());
+    }
+
+    @Test
+    void testSearchAverageParamError() {
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.SEARCH)
+                .param("q", "error:>=7").get();
+        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getHttpStatus());
+    }
 }
