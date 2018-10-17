@@ -2,6 +2,7 @@ package es.upm.miw.apaw.api.businessControllers;
 
 import es.upm.miw.apaw.api.daos.DaoFactory;
 import es.upm.miw.apaw.api.dtos.AlumnoDto;
+import es.upm.miw.apaw.api.dtos.AlumnoWithMediaDto;
 import es.upm.miw.apaw.api.dtos.PracticaDto;
 import es.upm.miw.apaw.api.entities.Alumno;
 import es.upm.miw.apaw.api.entities.Practica;
@@ -9,6 +10,7 @@ import es.upm.miw.apaw.api.entities.Profesor;
 import es.upm.miw.apaw.api.exceptions.NotFoundException;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -65,5 +67,12 @@ public class AlumnoBusinessController {
 
         DaoFactory.getFactory().getPracticaDao().save(practica);
         DaoFactory.getFactory().getAlumnoDao().save(alumno);
+    }
+
+    public List<AlumnoWithMediaDto> findByAverageGreaterThanEqual(Double value) {
+        return DaoFactory.getFactory().getAlumnoDao().findAll().stream()
+                .filter(alumno -> alumno.average() >= value)
+                .map(alumno -> new AlumnoWithMediaDto(alumno, alumno.average()))
+                .collect(Collectors.toList());
     }
 }

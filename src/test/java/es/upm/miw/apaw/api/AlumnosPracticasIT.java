@@ -54,8 +54,7 @@ class AlumnosPracticasIT extends AlumnosITSupport {
     void testUpdateNotaPractica() {
         String alumnoId = createAlumno(null);
         String practicaId = createPractica(alumnoId, "APAW. ECP2. Arquitecturas y Patrones Web", Asignatura.APAW);
-        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath(alumnoId).path(AlumnoApiController.PRACTICAS).path(AlumnoApiController.ID_ID).expandPath(practicaId).path(AlumnoApiController.NOTA).body(8).patch();
-        HttpResponse response = new Client().submit(request);
+        HttpResponse response = updateNotaPractica(alumnoId, practicaId, 8);
         assertEquals(HttpStatus.OK, response.getStatus());
 
         response = readAllPracticasAlumno(alumnoId);
@@ -68,8 +67,7 @@ class AlumnosPracticasIT extends AlumnosITSupport {
     void testUpdateNotaPracticaWithNotaNull() {
         String alumnoId = createAlumno(null);
         String practicaId = createPractica(alumnoId, "APAW. ECP2. Arquitecturas y Patrones Web", Asignatura.APAW);
-        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath(alumnoId).path(AlumnoApiController.PRACTICAS).path(AlumnoApiController.ID_ID).expandPath(practicaId).path(AlumnoApiController.NOTA).body(null).patch();
-        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        HttpException exception = assertThrows(HttpException.class, () -> updateNotaPractica(alumnoId, practicaId, null));
         assertEquals(HttpStatus.BAD_REQUEST, exception.getHttpStatus());
         assertTrue(exception.getMessage().contains("NOTA"));
     }
@@ -77,8 +75,7 @@ class AlumnosPracticasIT extends AlumnosITSupport {
     @Test
     void testUpdateNotaPracticaNotFound() {
         String alumnoId = createAlumno(null);
-        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath(alumnoId).path(AlumnoApiController.PRACTICAS).path(AlumnoApiController.ID_ID).expandPath("s5FdeGf54D").path(AlumnoApiController.NOTA).body(8).patch();
-        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        HttpException exception = assertThrows(HttpException.class, () -> updateNotaPractica(alumnoId, "s5FdeGf54D", 8));
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         assertTrue(exception.getMessage().contains("PRACTICA"));
     }
@@ -86,7 +83,7 @@ class AlumnosPracticasIT extends AlumnosITSupport {
     @Test
     void testUpdateNotaPracticaAlumnoNotFound() {
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath("s5FdeGf54D").path(AlumnoApiController.PRACTICAS).path(AlumnoApiController.ID_ID).expandPath("s5FdeGf54D").path(AlumnoApiController.NOTA).body(8).patch();
-        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        HttpException exception = assertThrows(HttpException.class, () -> updateNotaPractica("s5FdeGf54D", "s5FdeGf54D", 8));
         assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
         assertTrue(exception.getMessage().contains("ALUMNO"));
     }

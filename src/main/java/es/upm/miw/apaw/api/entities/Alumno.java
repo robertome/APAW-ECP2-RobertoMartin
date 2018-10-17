@@ -18,10 +18,6 @@ public class Alumno {
         return new Builder();
     }
 
-    public void update(Practica practica) {
-        practicas.add(practica);
-    }
-
     public Set<Practica> getPracticas() {
         return practicas;
     }
@@ -60,6 +56,10 @@ public class Alumno {
 
     public void addPractica(Practica practica) {
         practicas.add(practica);
+    }
+
+    public Double average() {
+        return practicas.stream().mapToDouble(p -> p.getNota() != null ? p.getNota() : 0).average().orElse(Double.NaN);
     }
 
     @Override

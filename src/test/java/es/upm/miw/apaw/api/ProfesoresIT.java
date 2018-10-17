@@ -1,13 +1,21 @@
 package es.upm.miw.apaw.api;
 
 import es.upm.miw.apaw.api.apiControllers.ProfesorApiController;
+import es.upm.miw.apaw.api.daos.DaoFactory;
+import es.upm.miw.apaw.api.daos.memory.DaoMemoryFactory;
 import es.upm.miw.apaw.api.dtos.ProfesorDto;
 import es.upm.miw.apaw.http.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class ProfesoresIT {
+
+    @BeforeEach
+    public void init() {
+        DaoFactory.setFactory(new DaoMemoryFactory());
+    }
 
     @Test
     void testCreateProfesor() {

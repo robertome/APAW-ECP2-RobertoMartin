@@ -75,6 +75,8 @@ public class Dispatcher {
     private void doGet(HttpRequest request, HttpResponse response) {
         if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.ID_ID + AlumnoApiController.PRACTICAS)) {
             response.setBody(alumnoApiController.readAllPracticas(request.getPath(1)));
+        } else if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.SEARCH)) {
+            response.setBody(alumnoApiController.find(request.getParams().get("q")));
         } else {
             throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
         }

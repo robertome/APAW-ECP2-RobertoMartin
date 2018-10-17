@@ -2,8 +2,11 @@ package es.upm.miw.apaw.api.apiControllers;
 
 import es.upm.miw.apaw.api.businessControllers.AlumnoBusinessController;
 import es.upm.miw.apaw.api.dtos.AlumnoDto;
+import es.upm.miw.apaw.api.dtos.AlumnoWithMediaDto;
 import es.upm.miw.apaw.api.dtos.PracticaDto;
+import es.upm.miw.apaw.api.exceptions.ArgumentNotValidException;
 
+import java.util.List;
 import java.util.Set;
 
 public class AlumnoApiController extends ApiControllerSupport {
@@ -12,6 +15,7 @@ public class AlumnoApiController extends ApiControllerSupport {
     public static final String ID_ID = "/{id}";
     public static final String PRACTICAS = "/practicas";
     public static final String NOTA = "/nota";
+    public static final String SEARCH = "/search";
 
     private final AlumnoBusinessController alumnoBusinessController = new AlumnoBusinessController();
 
@@ -43,7 +47,14 @@ public class AlumnoApiController extends ApiControllerSupport {
 
     public void updateNotaPractica(String alumnoId, String practicaId, Integer nota) {
         validateNotNull(nota, "nota");
+        validateRange(nota, 0, 10, "nota");
         alumnoBusinessController.updateNotaPractica(alumnoId, practicaId, nota);
+    }
+
+    private void validateRange(Integer nota, int i, int i1, String message) {
+        if (nota < 0 || nota > 10) {
+            throw new ArgumentNotValidException(message + " MUST be between 0 and 10");
+        }
     }
 
     private void validateAlumnoDto(AlumnoDto alumnoDto) {
@@ -62,4 +73,14 @@ public class AlumnoApiController extends ApiControllerSupport {
         validateNotNull(practicaDto.getAsignatura(), "pracitaDto.asignatura");
     }
 
+    public List<AlumnoWithMediaDto> find(String query) {
+        validateNotNull(query, "query param q");
+        validateNotEmpty(query, "query param q");
+        String[] queryArray = query.split(":>=");
+        if (!"average".equals(queryArray[0])) {
+            throw new ArgumentNotValidException("query param q is incorrect, missing 'average:>='");
+        }
+
+        return alumnoBusinessController.findByAverageGreaterThanEqual(Double.valueOf(queryArray[1]));
+    }
 }
