@@ -39,7 +39,7 @@ public class AlumnoBusinessController {
                 .orElseThrow(() -> new NotFoundException("Alumno id: " + alumnoId));
 
         Practica practica = Practica.builder(practicaDto.getNombre(), practicaDto.getAsignatura()).fecha(practicaDto.getFecha()).entregada(practicaDto.isEntregada()).build();
-        DaoFactory.getFactory().getPractica().save(practica);
+        DaoFactory.getFactory().getPracticaDao().save(practica);
 
         alumno.addPractica(practica);
         DaoFactory.getFactory().getAlumnoDao().save(alumno);
@@ -54,5 +54,16 @@ public class AlumnoBusinessController {
 
     public void delete(String alumnoId) {
         DaoFactory.getFactory().getAlumnoDao().deleteById(alumnoId);
+    }
+
+    public void updateNotaPractica(String alumnoId, String practicaId, Integer nota) {
+        Alumno alumno = DaoFactory.getFactory().getAlumnoDao().read(alumnoId)
+                .orElseThrow(() -> new NotFoundException("Alumno id: " + alumnoId));
+        Set<Practica> practicas = alumno.getPracticas();
+        Practica practica = practicas.stream().filter(p -> practicaId.equals(p.getId())).findFirst().orElseThrow(() -> new NotFoundException("Practica id: " + practicaId));
+        practica.setNota(nota);
+
+        DaoFactory.getFactory().getPracticaDao().save(practica);
+        DaoFactory.getFactory().getAlumnoDao().save(alumno);
     }
 }
