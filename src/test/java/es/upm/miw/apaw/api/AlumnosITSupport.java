@@ -15,12 +15,7 @@ import org.junit.jupiter.api.BeforeEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-public abstract class AlumnosITSupport {
-
-    @BeforeEach
-    public void init() {
-        DaoFactory.setFactory(new DaoMemoryFactory());
-    }
+public abstract class AlumnosITSupport extends ITSupport {
 
     protected String createAlumno(String profesorId) {
         return createAlumno("Alumno", "Apellido1 Apellido2", profesorId);

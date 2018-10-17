@@ -10,12 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ProfesoresIT {
-
-    @BeforeEach
-    public void init() {
-        DaoFactory.setFactory(new DaoMemoryFactory());
-    }
+class ProfesoresIT extends ITSupport{
 
     @Test
     void testCreateProfesor() {
