@@ -198,12 +198,14 @@ class AlumnosIT {
         createPractica(createAlumno(null), "APAW. ECP2. Arquitecturas y Patrones Web", Asignatura.APAW);
     }
 
-    private void createPractica(String alumnoId, String nombrePractica, Asignatura asignatura) {
+    private String createPractica(String alumnoId, String nombrePractica, Asignatura asignatura) {
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).path(AlumnoApiController.PRACTICAS)
                 .expandPath(alumnoId).body(PracticaDto.builder(nombrePractica, asignatura).build()).post();
         HttpResponse response = new Client().submit(request);
         assertEquals(HttpStatus.OK, response.getStatus());
         assertNotNull(response.getBody());
+
+        return (String) response.getBody();
     }
 
     @Test
@@ -223,47 +225,44 @@ class AlumnosIT {
         assertTrue(exception.getMessage().contains("ALUMNO"));
     }
 
-
     @Test
     void testReadAllPracticasAlumno() {
-        createAlumnoWithPracticas();
+        HttpResponse response = readAllPracticasAlumno(createAlumnoWithPracticas());
+        assertEquals(HttpStatus.OK, response.getStatus());
+        assertNotNull(response.getBody());
+        assertTrue(((Set<PracticaDto>) response.getBody()).size() == 4);
     }
 
-    String createAlumnoWithPracticas() {
+    private String createAlumnoWithPracticas() {
         String alumnoId = createAlumno(null);
         createPractica(alumnoId, "APAW. ECP1. Patrones de Diseño", Asignatura.APAW);
         createPractica(alumnoId, "APAW. ECP2. Arquitecturas y Patrones Web", Asignatura.APAW);
         createPractica(alumnoId, "IWVG. Trabajo práctico: Web 2.0", Asignatura.IWVG);
         createPractica(alumnoId, "IWVG. Software Colaborativo", Asignatura.IWVG);
 
-        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).path(AlumnoApiController.PRACTICAS).expandPath(alumnoId).get();
-        HttpResponse response = new Client().submit(request);
-        assertEquals(HttpStatus.OK, response.getStatus());
-        assertNotNull(response.getBody());
-        assertTrue(((Set<PracticaDto>) response.getBody()).size() == 4);
-
         return alumnoId;
     }
 
     @Test
     void testReadAllPracticasAlumnoWithAlumnoIdNotFound() {
-        readAllPracticasAlumnoWithAlumnoIdNotFound("s5FdeGf54D");
-    }
-
-    void readAllPracticasAlumnoWithAlumnoIdNotFound(String alumnoId) {
-        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).path(AlumnoApiController.PRACTICAS).expandPath(alumnoId).get();
-        HttpResponse response = new Client().submit(request);
+        HttpResponse response = readAllPracticasAlumno("s5FdeGf54D");
         assertEquals(HttpStatus.OK, response.getStatus());
         assertNotNull(response.getBody());
-
         assertTrue(((Set<PracticaDto>) response.getBody()).size() == 0);
     }
+
+    private HttpResponse readAllPracticasAlumno(String alumnoId) {
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).path(AlumnoApiController.PRACTICAS).expandPath(alumnoId).get();
+        return new Client().submit(request);
+    }
+
 
     @Test
     void testDeleteAlumno() {
         String alumnoId = createAlumnoWithPracticas();
         deleteAlumno(alumnoId);
-        readAllPracticasAlumnoWithAlumnoIdNotFound(alumnoId);
+        HttpResponse response = readAllPracticasAlumno(alumnoId);
+        assertTrue(((Set<PracticaDto>) response.getBody()).size() == 0);
     }
 
     @Test
@@ -275,6 +274,47 @@ class AlumnosIT {
         HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath(alumnoId).delete();
         HttpResponse response = new Client().submit(request);
         assertEquals(HttpStatus.OK, response.getStatus());
+    }
+
+    @Test
+    void testUpdateNotaPractica() {
+        String alumnoId = createAlumno(null);
+        String practicaId = createPractica(alumnoId, "APAW. ECP2. Arquitecturas y Patrones Web", Asignatura.APAW);
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath(alumnoId).path(AlumnoApiController.PRACTICAS).path(AlumnoApiController.ID_ID).expandPath(practicaId).path(AlumnoApiController.NOTA).body(8).patch();
+        HttpResponse response = new Client().submit(request);
+        assertEquals(HttpStatus.OK, response.getStatus());
+
+        response = readAllPracticasAlumno(alumnoId);
+        PracticaDto practicaDto = ((Set<PracticaDto>) response.getBody()).iterator().next();
+        assertNotNull(practicaDto);
+        assertEquals(Integer.valueOf(8), practicaDto.getNota());
+    }
+
+    @Test
+    void testUpdateNotaPracticaWithNotaNull() {
+        String alumnoId = createAlumno(null);
+        String practicaId = createPractica(alumnoId, "APAW. ECP2. Arquitecturas y Patrones Web", Asignatura.APAW);
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath(alumnoId).path(AlumnoApiController.PRACTICAS).path(AlumnoApiController.ID_ID).expandPath(practicaId).path(AlumnoApiController.NOTA).body(null).patch();
+        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        assertEquals(HttpStatus.BAD_REQUEST, exception.getHttpStatus());
+        assertTrue(exception.getMessage().contains("NOTA"));
+    }
+
+    @Test
+    void testUpdateNotaPracticaNotFound() {
+        String alumnoId = createAlumno(null);
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath(alumnoId).path(AlumnoApiController.PRACTICAS).path(AlumnoApiController.ID_ID).expandPath("s5FdeGf54D").path(AlumnoApiController.NOTA).body(8).patch();
+        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertTrue(exception.getMessage().contains("PRACTICA"));
+    }
+
+    @Test
+    void testUpdateNotaPracticaAlumnoNotFound() {
+        HttpRequest request = HttpRequest.builder(AlumnoApiController.ALUMNOS).path(AlumnoApiController.ID_ID).expandPath("s5FdeGf54D").path(AlumnoApiController.PRACTICAS).path(AlumnoApiController.ID_ID).expandPath("s5FdeGf54D").path(AlumnoApiController.NOTA).body(8).patch();
+        HttpException exception = assertThrows(HttpException.class, () -> new Client().submit(request));
+        assertEquals(HttpStatus.NOT_FOUND, exception.getHttpStatus());
+        assertTrue(exception.getMessage().contains("ALUMNO"));
     }
 
 }

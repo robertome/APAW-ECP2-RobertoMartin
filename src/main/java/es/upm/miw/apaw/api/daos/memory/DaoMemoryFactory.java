@@ -31,7 +31,7 @@ public class DaoMemoryFactory extends DaoFactory {
     }
 
     @Override
-    public PracticaDao getPractica() {
+    public PracticaDao getPracticaDao() {
         if (practicaDao == null) {
             practicaDao = new PracticaDaoMemory();
         }

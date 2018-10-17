@@ -11,6 +11,7 @@ public class AlumnoApiController extends ApiControllerSupport {
     public static final String ALUMNOS = "/alumnos";
     public static final String ID_ID = "/{id}";
     public static final String PRACTICAS = "/practicas";
+    public static final String NOTA = "/nota";
 
     private final AlumnoBusinessController alumnoBusinessController = new AlumnoBusinessController();
 
@@ -38,6 +39,11 @@ public class AlumnoApiController extends ApiControllerSupport {
 
     public void delete(String alumnoId) {
         alumnoBusinessController.delete(alumnoId);
+    }
+
+    public void updateNotaPractica(String alumnoId, String practicaId, Integer nota) {
+        validateNotNull(nota, "nota");
+        alumnoBusinessController.updateNotaPractica(alumnoId, practicaId, nota);
     }
 
     private void validateAlumnoDto(AlumnoDto alumnoDto) {

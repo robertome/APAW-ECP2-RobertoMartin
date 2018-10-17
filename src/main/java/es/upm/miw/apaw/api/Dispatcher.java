@@ -89,7 +89,11 @@ public class Dispatcher {
     }
 
     private void doPatch(HttpRequest request) {
-        throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+        if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.ID_ID + AlumnoApiController.PRACTICAS + AlumnoApiController.ID_ID + AlumnoApiController.NOTA)) {
+            alumnoApiController.updateNotaPractica(request.getPath(1), request.getPath(3), (Integer) request.getBody());
+        } else {
+            throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+        }
     }
 
     private void doDelete(HttpRequest request) {
