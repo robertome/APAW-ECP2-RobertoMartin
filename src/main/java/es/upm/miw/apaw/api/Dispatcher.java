@@ -13,10 +13,13 @@ import es.upm.miw.apaw.api.exceptions.RequestInvalidException;
 import es.upm.miw.apaw.http.HttpRequest;
 import es.upm.miw.apaw.http.HttpResponse;
 import es.upm.miw.apaw.http.HttpStatus;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class Dispatcher {
 
     private static final String ERROR_MESSAGE = "{'error':'%S'}";
+    private static Logger logger = LogManager.getLogger(Dispatcher.class);
 
     static {
         DaoFactory.setFactory(new DaoMemoryFactory());
@@ -26,7 +29,6 @@ public class Dispatcher {
     private final AlumnoApiController alumnoApiController = new AlumnoApiController();
 
     public void submit(HttpRequest request, HttpResponse response) {
-
         try {
             switch (request.getMethod()) {
                 case POST:
@@ -53,8 +55,8 @@ public class Dispatcher {
         } catch (NotFoundException exception) {
             response.setBody(String.format(ERROR_MESSAGE, exception.getMessage()));
             response.setStatus(HttpStatus.NOT_FOUND);
-        } catch (Exception exception) {  // Unexpected
-            exception.printStackTrace();
+        } catch (Exception exception) {
+            logger.error("Unexpected exception", exception);
             response.setBody(String.format(ERROR_MESSAGE, exception));
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -68,28 +70,46 @@ public class Dispatcher {
         } else if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.ID_ID + AlumnoApiController.PRACTICAS)) {
             response.setBody(alumnoApiController.createPractica(request.getPath(1), (PracticaDto) request.getBody()));
         } else {
-            throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+            throw requestInvalidException(request);
         }
     }
 
     private void doGet(HttpRequest request, HttpResponse response) {
-        throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+        if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.ID_ID + AlumnoApiController.PRACTICAS)) {
+            response.setBody(alumnoApiController.readAllPracticas(request.getPath(1)));
+        } else if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.SEARCH)) {
+            response.setBody(alumnoApiController.find(request.getParams().get("q")));
+        } else {
+            throw requestInvalidException(request);
+        }
     }
 
     private void doPut(HttpRequest request) {
         if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.ID_ID)) {
             alumnoApiController.update(request.getPath(1), (AlumnoDto) request.getBody());
         } else {
-            throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+            throw requestInvalidException(request);
         }
     }
 
     private void doPatch(HttpRequest request) {
-        throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+        if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.ID_ID + AlumnoApiController.PRACTICAS + AlumnoApiController.ID_ID + AlumnoApiController.NOTA)) {
+            alumnoApiController.updateNotaPractica(request.getPath(1), request.getPath(3), (Integer) request.getBody());
+        } else {
+            throw requestInvalidException(request);
+        }
     }
 
     private void doDelete(HttpRequest request) {
-        throw new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
+        if (request.isEqualsPath(AlumnoApiController.ALUMNOS + AlumnoApiController.ID_ID)) {
+            alumnoApiController.delete(request.getPath(1));
+        } else {
+            throw requestInvalidException(request);
+        }
+    }
+
+    private RequestInvalidException requestInvalidException(HttpRequest request) {
+        return new RequestInvalidException("request error: " + request.getMethod() + ' ' + request.getPath());
     }
 
 }

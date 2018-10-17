@@ -1,11 +1,13 @@
 package es.upm.miw.apaw.api.dtos;
 
 import es.upm.miw.apaw.api.entities.Asignatura;
+import es.upm.miw.apaw.api.entities.Practica;
 
 import java.time.LocalDateTime;
 
 public class PracticaDto {
 
+    private String id;
     private String nombre;
     private LocalDateTime fecha = LocalDateTime.now();
     private Boolean entregada = false;
@@ -17,6 +19,10 @@ public class PracticaDto {
 
     public static Builder builder(String nombre, Asignatura asignatura) {
         return new Builder(nombre, asignatura);
+    }
+
+    public static Builder builder(Practica practica) {
+        return new Builder(practica);
     }
 
     public String getNombre() {
@@ -59,17 +65,50 @@ public class PracticaDto {
         this.asignatura = asignatura;
     }
 
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    @Override
+    public String toString() {
+        return "PracticaDto{" +
+                "id='" + id + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", fecha=" + fecha +
+                ", entregada=" + entregada +
+                ", nota=" + nota +
+                ", asignatura=" + asignatura +
+                '}';
+    }
+
     public static class Builder {
 
         private final PracticaDto practicaDto = new PracticaDto();
 
+        public Builder(Practica practica) {
+            this(practica.getNombre(), practica.getAsignatura());
+            this.fecha(practica.getFecha()).entregada(practica.isEntregada()).nota(practica.getNota());
+        }
+
         public Builder(String nombre, Asignatura asignatura) {
             assert nombre != null && !nombre.isEmpty();
+            assert asignatura != null;
 
+            this.nombre(nombre).asignatura(asignatura).fecha(LocalDateTime.now()).entregada(false);
+        }
+
+        public Builder id(String id) {
+            practicaDto.setId(id);
+            return this;
+        }
+
+        public Builder nombre(String nombre) {
             practicaDto.setNombre(nombre);
-            practicaDto.setAsignatura(asignatura);
-            practicaDto.setFecha(LocalDateTime.now());
-            practicaDto.setEntregada(false);
+            return this;
         }
 
         public Builder fecha(LocalDateTime fecha) {

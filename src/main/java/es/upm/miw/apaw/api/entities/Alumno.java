@@ -18,10 +18,6 @@ public class Alumno {
         return new Builder();
     }
 
-    public void update(Practica practica) {
-        practicas.add(practica);
-    }
-
     public Set<Practica> getPracticas() {
         return practicas;
     }
@@ -62,6 +58,10 @@ public class Alumno {
         practicas.add(practica);
     }
 
+    public Double average() {
+        return practicas.stream().mapToDouble(p -> p.getNota() != null ? p.getNota() : 0).average().orElse(Double.NaN);
+    }
+
     @Override
     public String toString() {
         return "Alumno{" +
@@ -69,9 +69,9 @@ public class Alumno {
                 ", nombre='" + nombre + '\'' +
                 ", apellidos='" + apellidos + '\'' +
                 ", profesor=" + profesor +
+                ", practicas=" + practicas +
                 '}';
     }
-
 
     public static class Builder {
         private final Alumno alumno = new Alumno();

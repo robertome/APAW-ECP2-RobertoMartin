@@ -21,5 +21,5 @@ public abstract class DaoFactory {
 
     public abstract AlumnoDao getAlumnoDao();
 
-    public abstract PracticaDao getPractica();
+    public abstract PracticaDao getPracticaDao();
 }
